@@ -1,0 +1,67 @@
+{
+  "DiskProvisioning": "thin",
+  "IPAllocationPolicy": "fixedPolicy",
+  "IPProtocol": "IPv4",
+  "PropertyMapping": [
+    {
+      "Key": "guestinfo.hostname",
+      "Value": "${esxi_name}"
+    },
+    {
+      "Key": "guestinfo.ipaddress",
+      "Value": "${esxi_ip}"
+    },
+    {
+      "Key": "guestinfo.netmask",
+      "Value": "${VMNetmask}"
+    },
+    {
+      "Key": "guestinfo.gateway",
+      "Value": "${VMGateway}"
+    },
+    {
+      "Key": "guestinfo.vlan",
+      "Value": ""
+    },
+    {
+      "Key": "guestinfo.dns",
+      "Value": "${VMDNS}"
+    },
+    {
+      "Key": "guestinfo.domain",
+      "Value": "${VMDomain}"
+    },
+    {
+      "Key": "guestinfo.ntp",
+      "Value": "${VMNTP}"
+    },
+    {
+      "Key": "guestinfo.syslog",
+      "Value": "${VMSyslog}"
+    },
+    {
+      "Key": "guestinfo.password",
+      "Value": "${VMPassword}"
+    },
+    {
+      "Key": "guestinfo.ssh",
+      "Value": "${VMSSH}"
+    },
+    {
+      "Key": "guestinfo.createvmfs",
+      "Value": "${VMVMFS}"
+    }
+  ],
+  "NetworkMapping": [
+    {
+      "Name": "VM Network",
+      "Network": "${VMNetwork}"
+    }
+  ],
+  "Annotation": "Nested ESXi 7.0.2 Appliance (Build 17630552)",
+  "MarkAsTemplate": false,
+  "PowerOn": false,
+  "InjectOvfEnv": false,
+  "WaitForIP": false,
+  "Name": null
+}
