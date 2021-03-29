@@ -1,0 +1,92 @@
+{
+  "Deployment": "default",
+  "DiskProvisioning": "thin",
+  "IPAllocationPolicy": "fixedPolicy",
+  "IPProtocol": "IPv4",
+  "PropertyMapping": [
+    {
+      "Key": "appliance.root_pwd",
+      "Value": "${VMPassword}"
+    },
+    {
+      "Key": "appliance.permit_root_login",
+      "Value": "True"
+    },
+    {
+      "Key": "appliance.ca_cert",
+      "Value": ""
+    },
+    {
+      "Key": "appliance.ca_cert_key",
+      "Value": ""
+    },
+    {
+      "Key": "network.hostname",
+      "Value": "${HAProxyVM}.${VMDomain}"
+    },
+    {
+      "Key": "network.nameservers",
+      "Value": "${VMDNS}"
+    },
+    {
+      "Key": "network.management_ip",
+      "Value": "${HAProxyVMIP}"
+    },
+    {
+      "Key": "network.management_gateway",
+      "Value": "${VMNetmask}"
+    },
+    {
+      "Key": "network.workload_ip",
+      "Value": "${HAProxyWorkloadIP}"
+    },
+    {
+      "Key": "network.workload_gateway",
+      "Value": "${HAProxyWorkloadGW}"
+    },
+    {
+      "Key": "network.frontend_ip",
+      "Value": ""
+    },
+    {
+      "Key": "network.frontend_gateway",
+      "Value": ""
+    },
+    {
+      "Key": "loadbalance.service_ip_range",
+      "Value": "${HAProxySVCIPRange}"
+    },
+    {
+      "Key": "loadbalance.dataplane_port",
+      "Value": "5556"
+    },
+    {
+      "Key": "loadbalance.haproxy_user",
+      "Value": "admin"
+    },
+    {
+      "Key": "loadbalance.haproxy_pwd",
+      "Value": "${HAProxyAdminPWD}"
+    }
+  ],
+  "NetworkMapping": [
+    {
+      "Name": "Management",
+      "Network": "${NewVCDVPGName}"
+    },
+    {
+      "Name": "Workload",
+      "Network": "${NewVCDVPGName1}"
+    },
+    {
+      "Name": "Frontend",
+      "Network": ""
+    }
+  ],
+  "Annotation": "HAProxy for the Load Balancer API (v0.1.10)",
+  "MarkAsTemplate": false,
+  "PowerOn": true,
+  "InjectOvfEnv": true,
+  "WaitForIP": false,
+  "Name": null
+}
