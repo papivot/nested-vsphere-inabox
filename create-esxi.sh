@@ -17,7 +17,7 @@ echo
 for i in "${!NestedESXiHostname[@]}"; do
 	export esxi_name=${NestedESXiHostname[$i]}
 	export esxi_ip=${NestedESXiIPs[$i]}
-  	envsubst < esxi.json.template > esxi.${NestedESXiHostname[$i]}.json
+  	envsubst < esxi.template.json > esxi.${NestedESXiHostname[$i]}.json
 
 	echo "Creating VM ${NestedESXiHostname[$i]}..."
 	govc import.ova --options=esxi.${NestedESXiHostname[$i]}.json --name=${NestedESXiHostname[$i]} ${NestedESXiApplianceOVA}
