@@ -10,7 +10,7 @@ export GOVC_NETWORK=$VMNetwork
 export GOVC_INSECURE=true
 export VCInstallFile="/mnt/vcenter/vcsa-cli-installer/lin64/vcsa-deploy"
 
-envsubst < vcenter.json.template > vcenter.${VCSADisplayName}.json
+envsubst < vcenter.template.json > vcenter.${VCSADisplayName}.json
 
 if [[ ! -f "${VCInstallFile}" ]]; then
     echo "${VCInstallFile} does not exist. Mount the VCenter Installation ISO to ${VCSAInstallerPath} and retry again. Exiting..."
