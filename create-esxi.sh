@@ -104,21 +104,12 @@ for i in "${!NestedESXiHostname[@]}"; do
 	govc host.esxcli system settings advanced set -o /VSAN/FakeSCSIReservations -i 1
 	govc host.esxcli system settings advanced set -o /UserVars/SuppressCoredumpWarning -i 1
 
-	#echo "Granting Admin permissions for user $username on ${name}..."
-	#govc permissions.set -principal $username -role Admin
-
 	echo "Enabling guest ARP inspection to get vm IPs without vmtools on ${NestedESXiHostname[$i]} ..."
 	govc host.esxcli system settings advanced set -o /UserVars/SuppressCoredumpWarning -i 1
-	#echo "Opening firewall for serial port traffic for ${name}..."
-	#govc host.esxcli network firewall ruleset set -r remoteSerialPort -e true
 
 	echo "Setting hostname for ${NestedESXiHostname[$i]} ..."
 	govc host.esxcli system hostname set -H ${NestedESXiHostname[$i]}.${VMDomain}
 
-	#echo "Enabling MOB for ${name}..."
-	#govc host.option.set Config.HostAgent.plugins.solo.enableMob true
-
 	echo "Done with ${NestedESXiHostname[$i]} !!"
-	#unset GOVC_USERNAME GOVC_PASSWORD
 	echo
 done

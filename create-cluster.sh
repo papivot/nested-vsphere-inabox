@@ -15,11 +15,6 @@ export GOVC_CLUSTER=$NewVCVSANClusterName
 export GOVC_NETWORK=$NewVCDVPGName
 export GOVC_RESOURCE_POOL=
 
-#cluster_path="/$dc_name/host/$cluster_name"
-#dvs_path="/$dc_name/network/DSwitch"
-#public_network="/$dc_name/network/PublicNetwork"
-#internal_network="/$dc_name/network/InternalNetwork"
-
 echo "Creating datacenter $NewVCDatacenterName ..."
 govc datacenter.create $NewVCDatacenterName
 
@@ -31,17 +26,17 @@ govc cluster.change -drs-enabled -vsan-enabled -ha-enabled $NewVCVSANClusterName
 
 echo
 echo "Creating dvs $NewVCVDSName ..."
-govc dvs.create -product-version 7.0.0 $NewVCVDSName
+govc dvs.create -product-version 7.0.0 -mtu 1600 $NewVCVDSName
 govc dvs.portgroup.add -dvs ${NewVCVDSName} -type earlyBinding -nports 16 ${NewVCDVPGName}
 
 echo
 echo "Creating dvs $NewVCVDSName1 ..."
-govc dvs.create -product-version 7.0.0 ${NewVCVDSName1}
+govc dvs.create -product-version 7.0.0 -mtu 1600  ${NewVCVDSName1}
 govc dvs.portgroup.add -dvs $NewVCVDSName1 -type earlyBinding -nports 16 $NewVCDVPGName1
 
 echo
 echo "Creating dvs $NewVCVDSName2 ..."
-govc dvs.create -product-version 7.0.0 $NewVCVDSName2
+govc dvs.create -product-version 7.0.0 -mtu 1600  $NewVCVDSName2
 govc dvs.portgroup.add -dvs $NewVCVDSName2 -type earlyBinding -nports 16 $NewVCDVPGName2
 
 for i in "${!NestedESXiHostname[@]}"; do
@@ -71,6 +66,7 @@ done
 
 echo
 echo "Creating Storage Policy on vCenter ..."
+
 # Does not work.. needs fixing.
 #govc tags.category.create -d "Default tag for WCP storage" -t Datastore pacific-tag-catagory
 #govc tags.create -d "Default tag for WCP storage" -c pacific-tag-catagory pacific-storage-tag
