@@ -17,5 +17,5 @@ export GOVC_RESOURCE_POOL=
 
 echo "Deploying HAProxy VM in the nested env ..."
 envsubst < haproxy.template.json > haproxy.${HAProxyVM}.json
-govc import.ova --options=haproxy.${HAProxyVM}.json --name=haproxy --json=true haproxy-v0.1.10.ova
+govc import.ova --options=haproxy.${HAProxyVM}.json --name=haproxy --json=true ${HAProxyOVA}
 rm -f haproxy.${HAProxyVM}.json
