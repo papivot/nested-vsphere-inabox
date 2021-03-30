@@ -15,6 +15,7 @@ export GOVC_CLUSTER=$NewVCVSANClusterName
 export GOVC_NETWORK=$NewVCDVPGName
 export GOVC_RESOURCE_POOL=
 
+echo "Deploying HAProxy VM in the nested env ..."
 envsubst < haproxy.template.json > haproxy.${HAProxyVM}.json
 govc import.ova --options=haproxy.${HAProxyVM}.json --name=haproxy --json=true haproxy-v0.1.10.ova
 rm -f haproxy.${HAProxyVM}.json
