@@ -48,20 +48,23 @@ for i in "${!NestedESXiHostname[@]}"; do
 	govc dvs.add -dvs ${NewVCVDSName2} -pnic vmnic3 ${NestedESXiHostname[$i]}.${VMDomain}
 	govc host.vnic.service -host ${NestedESXiHostname[$i]}.${VMDomain} -enable vsan vmk0
   	govc host.vnic.service -host ${NestedESXiHostname[$i]}.${VMDomain} -enable vmotion vmk0
-
-	disks=(`govc host.storage.info -host=${NestedESXiHostname[$i]}.${VMDomain} | grep disk | sort |awk '{print $1}'`)
-        size=(`govc host.storage.info -host=${NestedESXiHostname[$i]}.${VMDomain}  | grep disk | sort |awk '{print $3}' | cut -d. -f1`)
-        for j in "${!disks[@]}"; do
-                if [ ${size[$j]} = $NestedESXiCachingvDisk ] ; then
-                        cachedisk=`echo ${disks[$j]}|cut -d/ -f5-`
-                elif [ ${size[$j]} = $NestedESXiCapacityvDisk ]; then
-                        datadisk=`echo ${disks[$j]}|cut -d/ -f5-`
+	govc host.storage.info -host=${NestedESXiHostname[$i]}.${VMDomain}| grep disk | sort |awk '{printf "%s %d\n", $1, $3}' > ${NestedESXiHostname[$i]}.disklist
+	
+	IFS=$'\n'
+	for disks in `cat ${NestedESXiHostname[$i]}.disklist`; do
+		disk=`echo ${disks}|awk '{print $1}'`
+		size=`echo ${disks}|awk '{print $2}'`
+		if [ ${size} = $NestedESXiCachingvDisk ] ; then
+                        cachedisk=`echo ${disk}|cut -d/ -f5-`
+                elif [ ${size} = $NestedESXiCapacityvDisk ]; then
+                        datadisk=`echo ${disk}|cut -d/ -f5-`
                 fi
-        done
+	done
 
         echo "Configuring VSAN storage on host - ${NestedESXiHostname[$i]}.${VMDomain} using Cache disk: $cachedisk and Data disk: $datadisk..."
         govc host.esxcli -host=${NestedESXiHostname[$i]}.${VMDomain} vsan storage tag add -d $datadisk -t capacityFlash
         govc host.esxcli -host=${NestedESXiHostname[$i]}.${VMDomain} vsan storage add -s $cachedisk -d $datadisk
+        rm -f ${NestedESXiHostname[$i]}.disklist
 done
 
 echo
@@ -74,4 +77,4 @@ echo "Creating Storage Policy on vCenter ..."
 #govc storage.policy.create -category pacific-tag-catagory -tag pacific-tag-catagory pacific-gold-storage-policy
 
 echo "Creating WCP Content Library on vCenter ..."
-govc library.create -sub=https://wp-content.vmware.com/v2/latest/lib.json  -sub-ondemand=true Kubernetes
+govc library.create -sub=https://wp-content.vmware.com/v2/latest/lib.json -sub-ondemand=true Kubernetes
