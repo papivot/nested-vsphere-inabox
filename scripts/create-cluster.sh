@@ -1,7 +1,7 @@
 #!/bin/bash -e
 set -o pipefail
 
-source ./env.config
+source ../config/env.config
 
 export GOVC_URL=$VCSAIPAddress
 export GOVC_USERNAME=administrator@vsphere.local

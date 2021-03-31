@@ -1,7 +1,7 @@
 #!/bin/bash -e
 set -o pipefail
 
-source ./env.config
+source ../config/env.config
 
 export GOVC_URL=$VIServer
 export GOVC_USERNAME=$VIUsername
@@ -17,7 +17,7 @@ echo
 for i in "${!NestedESXiHostname[@]}"; do
 	export esxi_name=${NestedESXiHostname[$i]}
 	export esxi_ip=${NestedESXiIPs[$i]}
-  	envsubst < esxi.template.json > esxi.${NestedESXiHostname[$i]}.json
+  	envsubst < ../config/esxi.template.json > esxi.${NestedESXiHostname[$i]}.json
 
 	echo "Creating VM ${NestedESXiHostname[$i]}..."
 	govc import.ova --options=esxi.${NestedESXiHostname[$i]}.json --name=${NestedESXiHostname[$i]} ${NestedESXiApplianceOVA}
@@ -73,8 +73,8 @@ for i in "${!NestedESXiHostname[@]}"; do
 	GOVC_USERNAME=$VIUsername
 	GOVC_PASSWORD=$VIPassword
 	echo "Creating disks on ${NestedESXiHostname[$i]} for use by vSAN ..."
-  	govc vm.disk.change --disk.filePath="[${GOVC_DATASTORE}] ${NestedESXiHostname[$i]}/${NestedESXiHostname[$i]}_1.vmdk" --size=8G --vm ${NestedESXiHostname[$i]}
-  	govc vm.disk.change --disk.filePath="[${GOVC_DATASTORE}] ${NestedESXiHostname[$i]}/${NestedESXiHostname[$i]}_2.vmdk" --size=140G --vm ${NestedESXiHostname[$i]}
+  	govc vm.disk.change --disk.filePath="[${GOVC_DATASTORE}] ${NestedESXiHostname[$i]}/${NestedESXiHostname[$i]}_1.vmdk" --size=${NestedESXiCachingvDisk}G --vm ${NestedESXiHostname[$i]}
+  	govc vm.disk.change --disk.filePath="[${GOVC_DATASTORE}] ${NestedESXiHostname[$i]}/${NestedESXiHostname[$i]}_2.vmdk" --size=${NestedESXiCapacityvDisk}G --vm ${NestedESXiHostname[$i]}
 done
 
 echo
