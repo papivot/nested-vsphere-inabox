@@ -27,7 +27,7 @@
     }
   ],
   "MarkAsTemplate": false,
-  "PowerOn": true,
+  "PowerOn": false,
   "InjectOvfEnv": true,
   "WaitForIP": false,
   "Name": null

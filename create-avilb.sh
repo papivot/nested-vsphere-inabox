@@ -18,4 +18,6 @@ export GOVC_RESOURCE_POOL=
 echo "Deploying AVI LB VM in the nested env ..."
 envsubst < avi.template.json > avi.${AVIVM}.json
 govc import.ova --options=avi.${AVIVM}.json --name=${AVIVM} --json=true ${AVIOVA}
+govc vm.change --c=4 --m=12288 --vm ${AVIVM}
+govc vm.power -on ${AVIVM}
 rm -f avi.${AVIVM}.json
