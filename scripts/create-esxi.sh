@@ -20,7 +20,7 @@ for i in "${!NestedESXiHostname[@]}"; do
   	envsubst < ../config/esxi.template.json > esxi.${NestedESXiHostname[$i]}.json
 
 	echo "Creating VM ${NestedESXiHostname[$i]}..."
-	govc import.ova --options=esxi.${NestedESXiHostname[$i]}.json --name=${NestedESXiHostname[$i]} ${NestedESXiApplianceOVA}
+	govc import.ova --options=esxi.${NestedESXiHostname[$i]}.json --name=${NestedESXiHostname[$i]} -ds=${VMDatastore} ${NestedESXiApplianceOVA}
 
 	echo "Updating VM ${NestedESXiHostname[$i]} with config values provided ..."
 	govc vm.change --c=${NestedESXivCPU} --m=${NestedESXivMEM} -g=${guest} --vm ${NestedESXiHostname[$i]}
