@@ -9,6 +9,10 @@ export GOVC_PASSWORD=$VIPassword
 export GOVC_DATASTORE=$VMDatastore
 export GOVC_NETWORK=$VMNetwork
 export GOVC_INSECURE=true
+export GOVC_DATACENTER=$VMDatacenter
+export GOVC_CLUSTER=$VMCluster
+#export GOVC_RESOURCE_POOL=
+export GOVC_RESOURCE_POOL=$VMCluster
 
 guest=${GUEST:-"vmkernel7Guest"}
 
@@ -20,14 +24,14 @@ for i in "${!NestedESXiHostname[@]}"; do
   	envsubst < ../config/esxi.template.json > esxi.${NestedESXiHostname[$i]}.json
 
 	echo "Creating VM ${NestedESXiHostname[$i]}..."
-	govc import.ova --options=esxi.${NestedESXiHostname[$i]}.json --name=${NestedESXiHostname[$i]} ${NestedESXiApplianceOVA}
+	govc import.ova --options=esxi.${NestedESXiHostname[$i]}.json --name=${NestedESXiHostname[$i]} -ds=${VMDatastore} ${NestedESXiApplianceOVA}
 
 	echo "Updating VM ${NestedESXiHostname[$i]} with config values provided ..."
 	govc vm.change --c=${NestedESXivCPU} --m=${NestedESXivMEM} -g=${guest} --vm ${NestedESXiHostname[$i]}
-	govc vm.network.add --net.adapter=vmxnet3 --net=${NestedESXiNetwork1} --vm ${NestedESXiHostname[$i]}
-	govc vm.network.add --net.adapter=vmxnet3 --net=${NestedESXiNetwork2} --vm ${NestedESXiHostname[$i]}
-	govc vm.change -e ethernet2.filter4.name=dvfilter-maclearn -e ethernet2.filter4.onFailure=failOpen --vm ${NestedESXiHostname[$i]}
-	govc vm.change -e ethernet3.filter4.name=dvfilter-maclearn -e ethernet3.filter4.onFailure=failOpen --vm ${NestedESXiHostname[$i]}
+#	govc vm.network.add --net.adapter=vmxnet3 --net=${NestedESXiNetwork1} --vm ${NestedESXiHostname[$i]}
+#	govc vm.network.add --net.adapter=vmxnet3 --net=${NestedESXiNetwork2} --vm ${NestedESXiHostname[$i]}
+#	govc vm.change -e ethernet2.filter4.name=dvfilter-maclearn -e ethernet2.filter4.onFailure=failOpen --vm ${NestedESXiHostname[$i]}
+#	govc vm.change -e ethernet3.filter4.name=dvfilter-maclearn -e ethernet3.filter4.onFailure=failOpen --vm ${NestedESXiHostname[$i]}
 
 	echo "Upgrading HW version of VM ${NestedESXiHostname[$i]} ..."
 	govc vm.upgrade --vm ${NestedESXiHostname[$i]}
@@ -85,6 +89,8 @@ for i in "${!NestedESXiHostname[@]}"; do
         GOVC_URL=${NestedESXiIPs[$i]}
         GOVC_USERNAME="root"
         GOVC_PASSWORD=$VMPassword
+	GOVC_DATACENTER=""
+	GOVC_RESOURCE_POOL=""
   	echo "Rescanning ${NestedESXiHostname[$i]} HBA for new devices..."
   	disk=($(govc host.storage.info -rescan | grep /vmfs/devices/disks | awk '{print $1}' | sort))
 
@@ -102,9 +108,6 @@ for i in "${!NestedESXiHostname[@]}"; do
 	# A setting of 1 means that vSwp files are created thin, with 0% Object Space Reservation
 	govc host.esxcli system settings advanced set -o /VSAN/SwapThickProvisionDisabled -i 1
 	govc host.esxcli system settings advanced set -o /VSAN/FakeSCSIReservations -i 1
-	govc host.esxcli system settings advanced set -o /UserVars/SuppressCoredumpWarning -i 1
-
-	echo "Enabling guest ARP inspection to get vm IPs without vmtools on ${NestedESXiHostname[$i]} ..."
 	govc host.esxcli system settings advanced set -o /UserVars/SuppressCoredumpWarning -i 1
 
 	echo "Setting hostname for ${NestedESXiHostname[$i]} ..."

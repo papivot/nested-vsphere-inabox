@@ -1,21 +1,16 @@
 {
     "__version": "2.13.0",
-    "__comments": "Sample template to deploy a vCenter Server Appliance with an embedded Platform Services Controller on a vCenter Server instance.",
+    "__comments": "Sample template to deploy a vCenter Server Appliance with an embedded Platform Services Controller on an ESXi host.",
     "new_vcsa": {
-        "vc": {
+        "esxi": {
             "hostname": "${VIServer}",
             "username": "${VIUsername}",
             "password": "${VIPassword}",
             "deployment_network": "${VMNetwork}",
-            "datacenter": [
-                "${VMDatacenter}"
-            ],
-            "datastore": "${VMDatastore}",
-            "target": [
-                "${VMCluster}"
-            ]
+            "datastore": "${VMDatastore}"
         },
         "appliance": {
+            "__comments": [ ],
             "thin_disk_mode": true,
             "deployment_option": "${VCSADeploymentSize}",
             "name": "${VCSADisplayName}"

@@ -6,8 +6,6 @@ source ../config/env.config
 export GOVC_URL=$VCSAIPAddress
 export GOVC_USERNAME=administrator@vsphere.local
 export GOVC_PASSWORD=$VCSASSOPassword
-export GOVC_DATASTORE=$VMDatastore
-export GOVC_NETWORK=$VMNetwork
 export GOVC_INSECURE=true
 export GOVC_DATACENTER=$NewVCDatacenterName
 export GOVC_DATASTORE="vsanDatastore"
@@ -28,24 +26,26 @@ echo
 echo "Creating dvs $NewVCVDSName ..."
 govc dvs.create -product-version 7.0.0 -mtu 1600 $NewVCVDSName
 govc dvs.portgroup.add -dvs ${NewVCVDSName} -type earlyBinding -nports 16 ${NewVCDVPGName}
+govc dvs.portgroup.add -dvs ${NewVCVDSName} -type earlyBinding -vlan-mode=vlan -vlan=102 ${NewVCVDSName1}-PG
+govc dvs.portgroup.add -dvs ${NewVCVDSName} -type earlyBinding -vlan-mode=vlan -vlan=104 ${NewVCVDSName2}-PG
 
-echo
-echo "Creating dvs $NewVCVDSName1 ..."
-govc dvs.create -product-version 7.0.0 -mtu 1600  ${NewVCVDSName1}
-govc dvs.portgroup.add -dvs $NewVCVDSName1 -type earlyBinding -nports 16 $NewVCDVPGName1
+#echo
+#echo "Creating dvs $NewVCVDSName1 ..."
+#govc dvs.create -product-version 7.0.0 -mtu 1600  ${NewVCVDSName1}
+#govc dvs.portgroup.add -dvs $NewVCVDSName1 -type earlyBinding -nports 16 $NewVCDVPGName1
 
-echo
-echo "Creating dvs $NewVCVDSName2 ..."
-govc dvs.create -product-version 7.0.0 -mtu 1600  $NewVCVDSName2
-govc dvs.portgroup.add -dvs $NewVCVDSName2 -type earlyBinding -nports 16 $NewVCDVPGName2
+#echo
+#echo "Creating dvs $NewVCVDSName2 ..."
+#govc dvs.create -product-version 7.0.0 -mtu 1600  $NewVCVDSName2
+#govc dvs.portgroup.add -dvs $NewVCVDSName2 -type earlyBinding -nports 16 $NewVCDVPGName2
 
 for i in "${!NestedESXiHostname[@]}"; do
 	echo
 	echo "Adding Host ${NestedESXiHostname[$i]} to $NewVCVSANClusterName ..."
 	govc cluster.add -noverify -force -hostname ${NestedESXiHostname[$i]}.${VMDomain} -username root -password ${VMPassword}
 	govc dvs.add -dvs ${NewVCVDSName} -pnic vmnic1 ${NestedESXiHostname[$i]}.${VMDomain}
-	govc dvs.add -dvs ${NewVCVDSName1} -pnic vmnic2 ${NestedESXiHostname[$i]}.${VMDomain}
-	govc dvs.add -dvs ${NewVCVDSName2} -pnic vmnic3 ${NestedESXiHostname[$i]}.${VMDomain}
+#	govc dvs.add -dvs ${NewVCVDSName1} -pnic vmnic2 ${NestedESXiHostname[$i]}.${VMDomain}
+#	govc dvs.add -dvs ${NewVCVDSName2} -pnic vmnic3 ${NestedESXiHostname[$i]}.${VMDomain}
 	govc host.vnic.service -host ${NestedESXiHostname[$i]}.${VMDomain} -enable vsan vmk0
   	govc host.vnic.service -host ${NestedESXiHostname[$i]}.${VMDomain} -enable vmotion vmk0
 	govc host.storage.info -host=${NestedESXiHostname[$i]}.${VMDomain}| grep disk | sort |awk '{printf "%s %d\n", $1, $3}' > ${NestedESXiHostname[$i]}.disklist
@@ -68,7 +68,7 @@ for i in "${!NestedESXiHostname[@]}"; do
 done
 
 echo
-echo "Creating Storage Policy on vCenter ..."
+echo "Create Storage Policy on vCenter ..."
 
 # Does not work.. needs fixing.
 #govc tags.category.create -d "Default tag for WCP storage" -t Datastore pacific-tag-catagory
@@ -76,5 +76,5 @@ echo "Creating Storage Policy on vCenter ..."
 #govc tags.attach -c pacific-tag-catagory pacific-storage-tag /${GOVC_DATACENTER}/datastore/${GOVC_DATASTORE}
 #govc storage.policy.create -category pacific-tag-catagory -tag pacific-tag-catagory pacific-gold-storage-policy
 
-echo "Creating WCP Content Library on vCenter ..."
-govc library.create -sub=https://wp-content.vmware.com/v2/latest/lib.json -sub-ondemand=true Kubernetes
+#echo "Creating WCP Content Library on vCenter ..."
+#govc library.create -sub=https://wp-content.vmware.com/v2/latest/lib.json -sub-ondemand=true Kubernetes
