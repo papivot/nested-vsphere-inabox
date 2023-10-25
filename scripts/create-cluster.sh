@@ -24,7 +24,7 @@ govc cluster.change -drs-enabled -vsan-enabled -ha-enabled $NewVCVSANClusterName
 
 echo
 echo "Creating dvs $NewVCVDSName ..."
-govc dvs.create -product-version 7.0.0 -mtu 1600 $NewVCVDSName
+govc dvs.create -product-version 8.0.0 -mtu 9000 $NewVCVDSName
 govc dvs.portgroup.add -dvs ${NewVCVDSName} -type earlyBinding -nports 16 ${NewVCDVPGName}
 govc dvs.portgroup.add -dvs ${NewVCVDSName} -type earlyBinding -vlan-mode=vlan -vlan=102 ${NewVCVDSName1}-PG
 govc dvs.portgroup.add -dvs ${NewVCVDSName} -type earlyBinding -vlan-mode=vlan -vlan=104 ${NewVCVDSName2}-PG

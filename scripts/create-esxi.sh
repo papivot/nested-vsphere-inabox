@@ -86,9 +86,9 @@ echo "Completing Configurations on Nested ESXi hosts..."
 echo
 for i in "${!NestedESXiHostname[@]}"; do
 
-        GOVC_URL=${NestedESXiIPs[$i]}
-        GOVC_USERNAME="root"
-        GOVC_PASSWORD=$VMPassword
+	GOVC_URL=${NestedESXiIPs[$i]}
+    GOVC_USERNAME="root"
+    GOVC_PASSWORD=$VMPassword
 	GOVC_DATACENTER=""
 	GOVC_RESOURCE_POOL=""
   	echo "Rescanning ${NestedESXiHostname[$i]} HBA for new devices..."
