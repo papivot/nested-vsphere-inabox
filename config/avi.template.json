@@ -23,7 +23,7 @@
   "NetworkMapping": [
     {
       "Name": "Management",
-      "Network": "${NewVCDVPGName}"
+      "Network": "${VMNetwork}"
     }
   ],
   "MarkAsTemplate": false,

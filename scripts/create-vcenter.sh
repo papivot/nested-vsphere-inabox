@@ -12,6 +12,12 @@ export VCInstallFile="/mnt/vcenter/vcsa-cli-installer/lin64/vcsa-deploy"
 
 envsubst < ../config/vcenter.template.json > vcenter.${VCSADisplayName}.json
 
+if mountpoint -q "/mnt/vcenter" ; then
+    echo "An ISO is already mounted to /mnt/vcenter"
+else
+    sudo mount ${VCSAISO} /mnt/vcenter
+fi
+
 if [[ ! -f "${VCInstallFile}" ]]; then
     echo "${VCInstallFile} does not exist. Mount the VCenter Installation ISO to ${VCSAInstallerPath} and retry again. Exiting..."
     exit 1

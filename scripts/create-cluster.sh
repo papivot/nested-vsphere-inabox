@@ -42,14 +42,16 @@ govc dvs.portgroup.add -dvs ${NewVCVDSName} -type earlyBinding -vlan-mode=vlan -
 for i in "${!NestedESXiHostname[@]}"; do
 	echo
 	echo "Adding Host ${NestedESXiHostname[$i]} to $NewVCVSANClusterName ..."
-	govc cluster.add -noverify -force -hostname ${NestedESXiHostname[$i]}.${VMDomain} -username root -password ${VMPassword}
+	govc cluster.add -noverify=true -force -hostname ${NestedESXiHostname[$i]}.${VMDomain} -username root -password ${VMPassword}
 	govc dvs.add -dvs ${NewVCVDSName} -pnic vmnic1 ${NestedESXiHostname[$i]}.${VMDomain}
 #	govc dvs.add -dvs ${NewVCVDSName1} -pnic vmnic2 ${NestedESXiHostname[$i]}.${VMDomain}
 #	govc dvs.add -dvs ${NewVCVDSName2} -pnic vmnic3 ${NestedESXiHostname[$i]}.${VMDomain}
 	govc host.vnic.service -host ${NestedESXiHostname[$i]}.${VMDomain} -enable vsan vmk0
   	govc host.vnic.service -host ${NestedESXiHostname[$i]}.${VMDomain} -enable vmotion vmk0
+	govc host.storage.info -host=${NestedESXiHostname[$i]}.${VMDomain} -refresh=true -rescan=true -rescan-vmfs=true
+	sleep 5
 	govc host.storage.info -host=${NestedESXiHostname[$i]}.${VMDomain}| grep disk | sort |awk '{printf "%s %d\n", $1, $3}' > ${NestedESXiHostname[$i]}.disklist
-	
+
 	IFS=$'\n'
 	for disks in `cat ${NestedESXiHostname[$i]}.disklist`; do
 		disk=`echo ${disks}|awk '{print $1}'`
@@ -66,9 +68,6 @@ for i in "${!NestedESXiHostname[@]}"; do
         govc host.esxcli -host=${NestedESXiHostname[$i]}.${VMDomain} vsan storage add -s $cachedisk -d $datadisk
         rm -f ${NestedESXiHostname[$i]}.disklist
 done
-
-echo
-echo "Create Storage Policy on vCenter ..."
 
 # Does not work.. needs fixing.
 #govc tags.category.create -d "Default tag for WCP storage" -t Datastore pacific-tag-catagory
