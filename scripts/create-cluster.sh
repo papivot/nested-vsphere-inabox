@@ -28,6 +28,8 @@ govc dvs.create -product-version 8.0.0 -mtu 9000 $NewVCVDSName
 govc dvs.portgroup.add -dvs ${NewVCVDSName} -type earlyBinding -nports 16 ${NewVCDVPGName}
 govc dvs.portgroup.add -dvs ${NewVCVDSName} -type earlyBinding -vlan-mode=vlan -vlan=102 ${NewVCVDSName1}-PG
 govc dvs.portgroup.add -dvs ${NewVCVDSName} -type earlyBinding -vlan-mode=vlan -vlan=104 ${NewVCVDSName2}-PG
+govc dvs.portgroup.add -dvs ${NewVCVDSName} -type ephemeral -vlan-mode=trunking -vlan-range=0-4094 edge-uplink-1
+govc dvs.portgroup.add -dvs ${NewVCVDSName} -type ephemeral -vlan-mode=trunking -vlan-range=0-4094 edge-uplink-2
 
 #echo
 #echo "Creating dvs $NewVCVDSName1 ..."

@@ -9,12 +9,12 @@ export GOVC_PASSWORD=$VIPassword
 export GOVC_DATASTORE=$VMDatastore
 export GOVC_NETWORK=$VMNetwork
 export GOVC_INSECURE=true
-export GOVC_DATACENTER=$VMDatacenter
-export GOVC_CLUSTER=$VMCluster
+#export GOVC_DATACENTER=$VMDatacenter
+#export GOVC_CLUSTER=$VMCluster
 #export GOVC_RESOURCE_POOL=
-export GOVC_RESOURCE_POOL=$VMCluster
+#export GOVC_RESOURCE_POOL=$VMCluster
 
-guest=${GUEST:-"vmkernel7Guest"}
+guest=${GUEST:-"vmkernel8Guest"}
 
 echo "Starting Nested ESXi deployment loop..."
 echo
